@@ -1,0 +1,32 @@
+#graphs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 2em;
+
+    .chart {
+        // padding: 0.5em;
+        canvas {
+            width: 100%;
+        }
+
+        .legend {
+            list-style: none;
+            padding-left: 0;
+
+            .series {
+                list-style-type: none;
+                display: block;
+                float: left;
+                margin-right: 1em;
+
+                .color-block {
+                    display: inline-block;
+                    vertical-align: middle;
+                    width: 1em;
+                    height: 1em;
+                    margin-right: 0.5em;
+                }
+            }
+        }
+    }
+}
