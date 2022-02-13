@@ -29,6 +29,7 @@ export class AudioInput {
                     el.innerHTML = d.label;
                     this.s_inputs.appendChild(el);
                 });
+                this.selectDevice({target: this.s_inputs});
             });
 
             this.s_inputs.addEventListener('change', this.selectDevice.bind(this));
@@ -45,6 +46,8 @@ export class AudioInput {
             this.source = this.context.createMediaStreamSource(stream);
             this.isRunning = true;
             this.b_startstop.innerHTML = 'Stop';
+            this.b_startstop.classList.remove('btn-danger');
+            this.b_startstop.classList.add('btn-success');
             events.fire('input/audio/start', this);
         });
     }
@@ -56,6 +59,8 @@ export class AudioInput {
         this.isRunning = false;
         this.stream = this.context = this.source = null;
         this.b_startstop.innerHTML = 'Start';
+        this.b_startstop.classList.add('btn-danger');
+        this.b_startstop.classList.remove('btn-success');
     }
 
     restart() {
