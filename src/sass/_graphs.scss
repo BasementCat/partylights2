@@ -3,29 +3,42 @@
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 2em;
 
-    .chart {
-        // padding: 0.5em;
-        canvas {
-            width: 100%;
-        }
+    #meter {
+        .bin {
+            background: linear-gradient(0deg, rgba(0, 39, 255, 1) 0%, rgba(0, 255, 0, 1) 33%, rgba(255, 235, 59, 1) 66%, rgba(255, 0, 0, 1) 100%);
+            display: block;
+            float: left;
+            width: 50px;
+            height: 200px;
+            margin-right: 5px;
+            position: relative;
 
-        .legend {
-            list-style: none;
-            padding-left: 0;
+            border: 4px solid black;
+            transition: border-color 0.25s;
 
-            .series {
-                list-style-type: none;
-                display: block;
-                float: left;
-                margin-right: 1em;
+            &.onset {
+                border-color: #00ff00;
+                transition: border-color 0s;
+            }
 
-                .color-block {
-                    display: inline-block;
-                    vertical-align: middle;
-                    width: 1em;
-                    height: 1em;
-                    margin-right: 0.5em;
-                }
+            .cover {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                background-color: rgba(0, 0, 0, 0.8);
+                z-index: 1;
+            }
+
+            .bar {
+                width: 100%;
+                height: 0;
+                border: 1px solid red;
+                position: absolute;
+                bottom: 0;
+                left: -1;
+                z-index: 2;
             }
         }
     }

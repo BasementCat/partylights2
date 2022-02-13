@@ -22,10 +22,5 @@
     "sass-loader": "^12.4.0",
     "webpack": "^5.67.0",
     "webpack-cli": "^4.9.2"
-  },
-  "dependencies": {
-    "chroma-js": "^2.3.0",
-    "meyda": "^5.3.0",
-    "realtime-bpm-analyzer": "^2.1.6"
   }
 }
