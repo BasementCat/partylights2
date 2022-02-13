@@ -84,11 +84,12 @@ export class AudioAnalyzer extends AudioConsumer {
         temp = {};
         Object.keys(this.freqGroups).forEach(k => temp[k] = 0);
         this.fSmooth = new ExpFilter(temp, 0.5, 0.99);
+
+        events.fire('audio/analysis/start', this);
     }
 
     process() {
         this.analyzer.getByteFrequencyData(this.buffer);
-        // 60-250hz
         let bins = {};
         this.buffer.forEach((v, i) => {
             let lfreq = this.freqPerBin * i;
@@ -121,10 +122,11 @@ export class AudioAnalyzer extends AudioConsumer {
             }
             this.samples[k].ignorePeaks = Math.max(0, --this.samples[k].ignorePeaks);
         });
-        events.fire('audio/analysis/data', this, bins);
+        events.fire('audio/analysis/data', this, {'bins': bins});
     }
 
     stop(event, input) {
+        events.fire('audio/analysis/stop', this);
         window.clearInterval(this.interval);
         input.source.disconnect(this.analyzer);
         this._resetProps();
