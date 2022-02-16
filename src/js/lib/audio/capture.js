@@ -1,9 +1,10 @@
 import * as events from '/src/js/lib/events';
+import {PrefKey} from '/src/js/lib/storage';
 
 export class AudioInput {
     constructor() {
-        this.selectedDevice = null;
-        this.isRunning = false;
+        this.selectedDevice = new PrefKey('capture.selectedDevice', null);
+        this.isRunning = new PrefKey('capture.isRunning', false);
 
         this.stream = null;
         this.context = null;
@@ -15,6 +16,10 @@ export class AudioInput {
         this.consumers = [];
 
         this.setup();
+
+        if (this.isRunning.val) {
+            this.start(true);
+        }
     }
 
     setup() {
@@ -29,7 +34,7 @@ export class AudioInput {
                     el.innerHTML = d.label;
                     this.s_inputs.appendChild(el);
                 });
-                this.selectDevice({target: this.s_inputs});
+                if (!this.selectedDevice.val) this.selectDevice({target: this.s_inputs}, true);
             });
 
             this.s_inputs.addEventListener('change', this.selectDevice.bind(this));
@@ -37,14 +42,17 @@ export class AudioInput {
         });
     }
 
-    start() {
-        if (this.isRunning) return;
-        if (!this.selectedDevice) return;
-        navigator.mediaDevices.getUserMedia({audio: {deviceId: this.selectedDevice}}).then(stream => {
+    start(isSetup) {
+        if (this.isRunning.val && !isSetup) return;
+        if (!this.selectedDevice.val) {
+            this.isRunning.val = false;
+            return;
+        }
+        navigator.mediaDevices.getUserMedia({audio: {deviceId: this.selectedDevice.val}}).then(stream => {
             this.stream = stream;
             this.context = new AudioContext();
             this.source = this.context.createMediaStreamSource(stream);
-            this.isRunning = true;
+            this.isRunning.val = true;
             this.b_startstop.innerHTML = 'Stop';
             this.b_startstop.classList.remove('btn-danger');
             this.b_startstop.classList.add('btn-success');
@@ -53,10 +61,10 @@ export class AudioInput {
     }
 
     stop() {
-        if (!this.isRunning) return;
+        if (!this.isRunning.val) return;
         events.fire('input/audio/stop', this);
         this.stream.getAudioTracks().forEach(track => track.stop());
-        this.isRunning = false;
+        this.isRunning.val = false;
         this.stream = this.context = this.source = null;
         this.b_startstop.innerHTML = 'Start';
         this.b_startstop.classList.add('btn-danger');
@@ -64,18 +72,18 @@ export class AudioInput {
     }
 
     restart() {
-        if (!this.isRunning) return;
+        if (!this.isRunning.val) return;
         this.stop();
         this.start();
     }
 
-    selectDevice(ev) {
-        this.selectedDevice = ev.target.value;
-        this.restart();
+    selectDevice(ev, isSetup) {
+        this.selectedDevice.val = ev.target.value;
+        if (!isSetup) this.restart();
     }
 
     toggleRunning() {
-        if (this.isRunning)
+        if (this.isRunning.val)
             this.stop();
         else
             this.start();
