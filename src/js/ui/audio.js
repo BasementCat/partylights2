@@ -1,6 +1,7 @@
 import * as events from '/src/js/lib/events';
 import {makeEl, makeText} from '/src/js/lib/ui/components/html';
 import {addNavItem} from '/src/js/lib/ui/components/nav';
+import {TabGroup} from '/src/js/lib/ui/components/tabs';
 import {PrefKey} from '/src/js/lib/storage';
 
 export default function setup() {
@@ -8,6 +9,14 @@ export default function setup() {
     let startStopButton = addNavItem('<button class="btn btn-danger" id="startstop">Start</button>').querySelector('#startstop');
     let selectedDevice = new PrefKey('capture.selectedDevice', null);
     let isRunning = new PrefKey('capture.isRunning', false);
+
+    let editorTabs = TabGroup.getGroup('editor-tabs');
+    editorTabs.addTab(
+        'audio-monitor',
+        'Monitor',
+        true,
+        '<div id="graphs"></div>',
+    );
 
     events.subscribe('input/audio/setup', (ev, input, devices) => {
         let didSelect = false;
