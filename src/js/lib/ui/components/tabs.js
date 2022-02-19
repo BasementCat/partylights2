@@ -1,16 +1,18 @@
 import {makeEl, makeText} from '/src/js/lib/ui/components/html';
+import {PrefKey} from '/src/js/lib/storage';
 
 
 let tabGroups = {};
 
-// TODO: selection mechanics
-// TODO: prefKey for selected tab per group
-
 
 export class TabGroup {
-    constructor(container, id) {
+    constructor(container, id, saveSelected) {
         this.container = container;
         this.id = id;
+        this.savedTab = null;
+        if (saveSelected || saveSelected === undefined) {
+            this.savedTab = new PrefKey('savedTabs.' + this.id, null);
+        }
 
         this.tabsEl = makeEl('ul', {'id': this.id, role: 'tablist'}, ['nav', 'nav-tabs']);
         this.panesEl = makeEl('div', {'id': this.id + '-content'}, ['tab-content']);
@@ -29,6 +31,14 @@ export class TabGroup {
 
     addTab(id, title, selected, contents) {
         this.tabs[id] = new Tab(this, id, title, selected, contents);
+        if (this.savedTab && this.savedTab.val === id)
+            this.tabs[id].tabJS.show();
+    }
+
+    updateSelected() {
+        if (!this.savedTab) return;
+        this.savedTab.val = null;
+        Object.entries(this.tabs).forEach(t => { if (t[1].isSelected) this.savedTab.val = t[0]; });
     }
 }
 
@@ -71,5 +81,9 @@ export class Tab {
 
         this.group.tabsEl.appendChild(this.tab);
         this.group.panesEl.appendChild(this.pane);
+
+        this.tabJS = bootstrap.Tab.getOrCreateInstance(this.button);
+        this.button.addEventListener('hidden.bs.tab', e => { this.isSelected = false; this.group.updateSelected(); });
+        this.button.addEventListener('shown.bs.tab', e => { this.isSelected = true; this.group.updateSelected(); });
     }
 }
