@@ -4,6 +4,7 @@ import {AudioAnalyzer} from '/src/js/lib/audio/analysis';
 import {TabGroup} from '/src/js/lib/ui/components/tabs';
 
 import setup_audio_ui from '/src/js/ui/audio';
+import setup_lights_ui from '/src/js/ui/lights';
 
 
 const input = new AudioInput();
@@ -13,3 +14,4 @@ const analyzer = new AudioAnalyzer();
 new TabGroup(document.querySelector('main.container'), 'editor-tabs');
 
 setup_audio_ui();
+setup_lights_ui();

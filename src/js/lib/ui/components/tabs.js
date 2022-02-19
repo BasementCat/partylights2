@@ -33,6 +33,7 @@ export class TabGroup {
         this.tabs[id] = new Tab(this, id, title, selected, contents);
         if (this.savedTab && this.savedTab.val === id)
             this.tabs[id].tabJS.show();
+        return this.tabs[id];
     }
 
     updateSelected() {
