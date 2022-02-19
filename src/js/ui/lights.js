@@ -4,6 +4,8 @@
 import {TabGroup} from '/src/js/lib/ui/components/tabs';
 import {PrefKey} from '/src/js/lib/storage';
 
+import {lightTypesData, lightsData} from '/src/js/lib/lights';
+
 export default function setup() {
     let editorTabs = TabGroup.getGroup('editor-tabs');
     let lightsTab = editorTabs.addTab(
@@ -29,13 +31,17 @@ export default function setup() {
     );
     let lightTypesInput = lightsTab.pane.querySelector('[name=light-types]');
     let lightsInput = lightsTab.pane.querySelector('[name=lights]');
-    let lightTypesData = new PrefKey('lights.types', {});
-    let lightsData = new PrefKey('lights.lights', {});
     lightTypesInput.value = JSON.stringify(lightTypesData.val, null, 4);
     lightsInput.value = JSON.stringify(lightsData.val, null, 4);
 
-    lightsTab.pane.querySelector('[name=save-light-types]').addEventListener('click', e => lightTypesData.val = JSON.parse(lightTypesInput.value));
-    lightsTab.pane.querySelector('[name=save-lights]').addEventListener('click', e => lightsData.val = JSON.parse(lightsInput.value));
+    lightsTab.pane.querySelector('[name=save-light-types]').addEventListener('click', e => {
+        lightTypesData.val = JSON.parse(lightTypesInput.value);
+        events.fire('lights/saved');
+    });
+    lightsTab.pane.querySelector('[name=save-lights]').addEventListener('click', e => {
+        lightsData.val = JSON.parse(lightsInput.value);
+        events.fire('lights/saved');
+    });
 
     lightsTab.pane.querySelector('[name=reset-light-types]').addEventListener('click', e => lightTypesInput.value = JSON.stringify(lightTypesData.val, null, 4));
     lightsTab.pane.querySelector('[name=reset-lights]').addEventListener('click', e => lightsInput.value = JSON.stringify(lightsData.val, null, 4));

@@ -1,6 +1,8 @@
 import {AudioInput} from '/src/js/lib/audio/capture';
 import {AudioAnalyzer} from '/src/js/lib/audio/analysis';
 
+import * as lights from '/src/js/lib/lights';
+
 import {TabGroup} from '/src/js/lib/ui/components/tabs';
 
 import setup_audio_ui from '/src/js/ui/audio';
